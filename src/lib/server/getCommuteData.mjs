@@ -5,7 +5,8 @@ import fs from 'fs';
 // Load listings data
 const data = JSON.parse(fs.readFileSync('./allNeighborhoodsData.json', 'utf8'));
 console.log(data)
-const API_KEY = 'AIzaSyCJKapYkEXB-jHM5htvhdCbuYG40haS0Cc';  // Place your API key here
+// This server-side script reads the Google Maps API key from the environment.
+const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 const results = {};
 
 async function getCommuteTime(listingId, origin) {
@@ -27,6 +28,9 @@ async function getCommuteTime(listingId, origin) {
 }
 
 async function main() {
+    if (!API_KEY) {
+        throw new Error('GOOGLE_MAPS_API_KEY is required to fetch commute times');
+    }
     for (let neighborhood of data) {
         for (let listing of neighborhood.units) {
             console.log(neighborhood.neighborhood_name)
